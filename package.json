@@ -1,6 +1,6 @@
 {
-  "name": "echoframe",
-  "version": "0.1.0",
+  "name": "yaazhvr",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,9 +9,17 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
+    "@types/uuid": "^10.0.0",
+    "konva": "^10.3.3",
     "next": "16.3.4",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-konva": "^19.2.6",
+    "uuid": "^14.0.2",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@types/node": "^20",

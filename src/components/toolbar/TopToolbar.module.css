@@ -1,0 +1,298 @@
+/* ─── Top Toolbar Styling ────────────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 0 var(--space-4);
+  gap: var(--space-4);
+  user-select: none;
+}
+
+.left,
+.center,
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.left {
+  flex: 0 0 auto;
+  gap: var(--space-3);
+}
+
+.center {
+  flex: 1;
+  justify-content: center;
+}
+
+.right {
+  flex: 0 0 auto;
+  gap: var(--space-3);
+}
+
+/* ─── Brand & Logo ───────────────────────────────────────────── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.brandLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+}
+
+.brandTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.brandBadge {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+}
+
+.projectPill {
+  display: flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+
+.projectName {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-dim);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── Apple Dynamic Playback Island ──────────────────────────── */
+.playbackIsland {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 4px 8px 4px 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.islandBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+}
+
+.islandDivider {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  margin: 0 2px;
+}
+
+/* Play Hero Button (White circle, black icon) */
+.playHeroBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.25);
+}
+
+.playHeroBtn:hover {
+  transform: scale(1.06);
+  background: #f4f4f5;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.4);
+}
+
+.playHeroBtn:active {
+  transform: scale(0.94);
+}
+
+/* OLED Timecode */
+.timecode {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  padding: 0 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeCurrent {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.timeSlash {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.timeTotal {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+/* Duration Stepper */
+.durationStepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+}
+
+.durationLabel {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.durationInput {
+  width: 38px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  padding: 0;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.durationInput::-webkit-outer-spin-button,
+.durationInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.durationUnit {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ─── Apple Minimal History Island ───────────────────────────── */
+.historyIsland {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 3px 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.historyBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.historyBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.historyBtn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.historyDivider {
+  width: 1px;
+  height: 14px;
+  background: var(--border);
+  margin: 0 2px;
+}
+
+/* ─── Export Button (Apple-grade high contrast CTA) ──────────── */
+.exportHeroBtn,
+.exportBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 34px;
+  padding: 0 16px;
+  border-radius: var(--radius-full);
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.exportHeroBtn:hover:not(:disabled),
+.exportBtn:hover:not(:disabled) {
+  background: #f4f4f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.35);
+}
+
+.exportHeroBtn:active:not(:disabled),
+.exportBtn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.exportHeroBtn:disabled,
+.exportBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+

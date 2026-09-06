@@ -1,5 +1,5 @@
 // ─── Sound Categories ──────────────────────────────────────────────
-export type SoundCategory = 'nature' | 'city' | 'temple' | 'people' | 'objects';
+export type SoundCategory = 'nature' | 'city' | 'temple' | 'people' | 'objects' | 'custom';
 
 export interface SoundAsset {
   id: string;
@@ -89,29 +89,68 @@ export const CATEGORIES: CategoryInfo[] = [
   { id: 'temple', label: 'Temple', icon: '🛕', color: '#F59E0B' },
   { id: 'people', label: 'People', icon: '👥', color: '#EC4899' },
   { id: 'objects', label: 'Objects', icon: '🔥', color: '#EF4444' },
+  { id: 'custom', label: 'Uploads', icon: '📁', color: '#A855F7' },
 ];
 
-// ─── Sound Library (built-in assets) ──────────────────────────────
+// ─── Sound Library (built-in real sound assets: 10 per category) ───
 export const SOUND_LIBRARY: SoundAsset[] = [
-  // Nature
-  { id: 'birds', name: 'Birds', category: 'nature', file: '/sounds/nature/birds.mp3', duration: 10, icon: '🐦' },
-  { id: 'wind', name: 'Wind', category: 'nature', file: '/sounds/nature/wind.mp3', duration: 10, icon: '💨' },
-  { id: 'rain', name: 'Rain', category: 'nature', file: '/sounds/nature/rain.mp3', duration: 10, icon: '🌧️' },
+  // ─── Nature (10 sounds) ──────────────────────────
+  { id: 'birds', name: 'Forest Birds', category: 'nature', file: '/sounds/nature/birds.mp3', duration: 10, icon: '🐦' },
+  { id: 'heavy_rain', name: 'Heavy Rain', category: 'nature', file: '/sounds/nature/heavy_rain.mp3', duration: 10, icon: '🌧️' },
+  { id: 'light_rain', name: 'Light Rain', category: 'nature', file: '/sounds/nature/light_rain.mp3', duration: 10, icon: '🌦️' },
+  { id: 'thunder', name: 'Thunderstorm', category: 'nature', file: '/sounds/nature/thunder.mp3', duration: 10, icon: '⚡' },
+  { id: 'wind', name: 'Gentle Wind', category: 'nature', file: '/sounds/nature/wind.mp3', duration: 10, icon: '💨' },
+  { id: 'howling_wind', name: 'Howling Wind', category: 'nature', file: '/sounds/nature/howling_wind.mp3', duration: 10, icon: '🌬️' },
+  { id: 'river', name: 'River Stream', category: 'nature', file: '/sounds/nature/river.mp3', duration: 10, icon: '🏞️' },
   { id: 'waterfall', name: 'Waterfall', category: 'nature', file: '/sounds/nature/waterfall.mp3', duration: 10, icon: '🌊' },
-  { id: 'river', name: 'River', category: 'nature', file: '/sounds/nature/river.mp3', duration: 10, icon: '🏞️' },
-  // City
-  { id: 'traffic', name: 'Traffic', category: 'city', file: '/sounds/city/traffic.mp3', duration: 10, icon: '🚗' },
-  { id: 'crowd', name: 'Crowd', category: 'city', file: '/sounds/city/crowd.mp3', duration: 10, icon: '👥' },
-  { id: 'metro', name: 'Metro', category: 'city', file: '/sounds/city/metro.mp3', duration: 10, icon: '🚇' },
-  // Temple
-  { id: 'bell', name: 'Bell', category: 'temple', file: '/sounds/temple/bell.mp3', duration: 10, icon: '🔔' },
-  { id: 'chanting', name: 'Chanting', category: 'temple', file: '/sounds/temple/chanting.mp3', duration: 10, icon: '🙏' },
-  // People
-  { id: 'laugh', name: 'Laugh', category: 'people', file: '/sounds/people/laugh.mp3', duration: 10, icon: '😂' },
-  { id: 'clap', name: 'Clap', category: 'people', file: '/sounds/people/clap.mp3', duration: 10, icon: '👏' },
-  { id: 'footsteps', name: 'Footsteps', category: 'people', file: '/sounds/people/footsteps.mp3', duration: 10, icon: '👣' },
-  // Objects
-  { id: 'fire', name: 'Fire', category: 'objects', file: '/sounds/objects/fire.mp3', duration: 10, icon: '🔥' },
-  { id: 'camera', name: 'Camera', category: 'objects', file: '/sounds/objects/camera.mp3', duration: 10, icon: '📷' },
-  { id: 'door', name: 'Door', category: 'objects', file: '/sounds/objects/door.mp3', duration: 10, icon: '🚪' },
+  { id: 'ocean_waves', name: 'Ocean Waves', category: 'nature', file: '/sounds/nature/ocean_waves.mp3', duration: 10, icon: '🏖️' },
+  { id: 'campfire', name: 'Campfire', category: 'nature', file: '/sounds/nature/campfire.mp3', duration: 10, icon: '🔥' },
+
+  // ─── City (10 sounds) ────────────────────────────
+  { id: 'traffic', name: 'City Traffic', category: 'city', file: '/sounds/city/traffic.mp3', duration: 10, icon: '🚗' },
+  { id: 'busy_street', name: 'Busy Street', category: 'city', file: '/sounds/city/busy_street.mp3', duration: 10, icon: '🏙️' },
+  { id: 'highway', name: 'Highway', category: 'city', file: '/sounds/city/highway.mp3', duration: 10, icon: '🛣️' },
+  { id: 'car_horn', name: 'Car Horn', category: 'city', file: '/sounds/city/car_horn.mp3', duration: 5, icon: '📯' },
+  { id: 'subway', name: 'Subway Station', category: 'city', file: '/sounds/city/subway.mp3', duration: 10, icon: '🚇' },
+  { id: 'siren', name: 'Ambulance Siren', category: 'city', file: '/sounds/city/siren.mp3', duration: 10, icon: '🚨' },
+  { id: 'cafe', name: 'Cafe Ambience', category: 'city', file: '/sounds/city/cafe.mp3', duration: 10, icon: '☕' },
+  { id: 'construction', name: 'Construction Site', category: 'city', file: '/sounds/city/construction.mp3', duration: 10, icon: '🏗️' },
+  { id: 'bicycle_bell', name: 'Bicycle Bell', category: 'city', file: '/sounds/city/bicycle_bell.mp3', duration: 3, icon: '🚲' },
+  { id: 'crowd_city', name: 'City Crowd', category: 'city', file: '/sounds/city/crowd_city.mp3', duration: 10, icon: '👥' },
+
+  // ─── Temple (10 sounds) ──────────────────────────
+  { id: 'temple_ambience', name: 'Temple Sanctuary', category: 'temple', file: '/sounds/temple/temple_ambience.mp3', duration: 10, icon: '🛕' },
+  { id: 'singing_bowl', name: 'Tibetan Singing Bowl', category: 'temple', file: '/sounds/temple/singing_bowl.mp3', duration: 10, icon: '🥣' },
+  { id: 'wind_chimes', name: 'Temple Wind Chimes', category: 'temple', file: '/sounds/temple/wind_chimes.mp3', duration: 10, icon: '🎐' },
+  { id: 'church_bells', name: 'Sanctuary Bells', category: 'temple', file: '/sounds/temple/church_bells.mp3', duration: 10, icon: '⛪' },
+  { id: 'gong', name: 'Ceremonial Gong', category: 'temple', file: '/sounds/temple/gong.mp3', duration: 8, icon: '🛎️' },
+  { id: 'temple_bell', name: 'Brass Bell', category: 'temple', file: '/sounds/temple/temple_bell.mp3', duration: 5, icon: '🔔' },
+  { id: 'meditation_bell', name: 'Meditation Bell', category: 'temple', file: '/sounds/temple/meditation_bell.mp3', duration: 8, icon: '🧘' },
+  { id: 'three_bells', name: 'Three Ring Bell', category: 'temple', file: '/sounds/temple/three_bells.mp3', duration: 10, icon: '✨' },
+  { id: 'droplets_sanctuary', name: 'Zen Water Droplets', category: 'temple', file: '/sounds/temple/droplets_sanctuary.mp3', duration: 10, icon: '💧' },
+  { id: 'night_temple', name: 'Night Shrine Crickets', category: 'temple', file: '/sounds/temple/night_temple.mp3', duration: 10, icon: '🦗' },
+
+  // ─── People (10 sounds) ──────────────────────────
+  { id: 'applause', name: 'Applause & Cheers', category: 'people', file: '/sounds/people/applause.mp3', duration: 8, icon: '👏' },
+  { id: 'cheering', name: 'Group Cheer', category: 'people', file: '/sounds/people/cheering.mp3', duration: 5, icon: '🎉' },
+  { id: 'laughter', name: 'Audience Laughter', category: 'people', file: '/sounds/people/laughter.mp3', duration: 6, icon: '😂' },
+  { id: 'laughter_cute', name: 'Giggle & Chuckle', category: 'people', file: '/sounds/people/laughter_cute.mp3', duration: 4, icon: '😄' },
+  { id: 'gasp', name: 'Surprise Gasp', category: 'people', file: '/sounds/people/gasp.mp3', duration: 3, icon: '😲' },
+  { id: 'footsteps_gravel', name: 'Footsteps on Gravel', category: 'people', file: '/sounds/people/footsteps_gravel.mp3', duration: 10, icon: '👞' },
+  { id: 'footsteps_leaves', name: 'Footsteps on Leaves', category: 'people', file: '/sounds/people/footsteps_leaves.mp3', duration: 10, icon: '🍂' },
+  { id: 'footsteps_snow', name: 'Footsteps in Snow', category: 'people', file: '/sounds/people/footsteps_snow.mp3', duration: 10, icon: '❄️' },
+  { id: 'crowded_bar', name: 'Social Chatter', category: 'people', file: '/sounds/people/crowded_bar.mp3', duration: 10, icon: '🗣️' },
+  { id: 'shush', name: 'Whisper & Shhh', category: 'people', file: '/sounds/people/shush.mp3', duration: 4, icon: '🤫' },
+
+  // ─── Objects (10 sounds) ─────────────────────────
+  { id: 'clock', name: 'Clock Ticking', category: 'objects', file: '/sounds/objects/clock.mp3', duration: 10, icon: '⏰' },
+  { id: 'keyboard', name: 'Keyboard Typing', category: 'objects', file: '/sounds/objects/keyboard.mp3', duration: 10, icon: '⌨️' },
+  { id: 'typewriter', name: 'Vintage Typewriter', category: 'objects', file: '/sounds/objects/typewriter.mp3', duration: 10, icon: '📜' },
+  { id: 'paper', name: 'Paper Rustling', category: 'objects', file: '/sounds/objects/paper.mp3', duration: 10, icon: '📄' },
+  { id: 'door_knock', name: 'Door Knock', category: 'objects', file: '/sounds/objects/door_knock.mp3', duration: 4, icon: '🚪' },
+  { id: 'door_slam', name: 'Heavy Door Slam', category: 'objects', file: '/sounds/objects/door_slam.mp3', duration: 4, icon: '🚪' },
+  { id: 'telephone', name: 'Rotary Telephone', category: 'objects', file: '/sounds/objects/telephone.mp3', duration: 6, icon: '☎️' },
+  { id: 'vinyl', name: 'Vinyl Crackle', category: 'objects', file: '/sounds/objects/vinyl.mp3', duration: 10, icon: '📻' },
+  { id: 'camera', name: 'Camera Shutter', category: 'objects', file: '/sounds/objects/camera.mp3', duration: 3, icon: '📷' },
+  { id: 'coins', name: 'Coins Dropping', category: 'objects', file: '/sounds/objects/coins.mp3', duration: 3, icon: '🪙' },
 ];
