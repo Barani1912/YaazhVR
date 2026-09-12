@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useMemo } from 'react';
-import { CATEGORIES, SOUND_LIBRARY, SoundAsset, SoundCategory } from '@/types';
+import { CATEGORIES, SOUND_LIBRARY, SoundAsset } from '@/types';
 import { useEditorStore } from '@/store/projectStore';
 import { audioEngine } from '@/audio/SpatialAudioEngine';
 import { formatDuration } from '@/utils/time';
@@ -62,6 +62,7 @@ export default function SoundLibrary() {
   }, [allSounds, search, selectedCategory]);
 
   const handleDragStart = useCallback((e: React.DragEvent, sound: SoundAsset) => {
+    e.dataTransfer.setData('application/yaazhvr-sound', JSON.stringify(sound));
     e.dataTransfer.setData('application/echoframe-sound', JSON.stringify(sound));
     e.dataTransfer.effectAllowed = 'copy';
   }, []);

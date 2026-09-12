@@ -10,7 +10,6 @@ import { useEditorStore } from '@/store/projectStore';
 export default function KeyboardShortcuts() {
   const {
     selectedSoundId,
-    isPlaying,
     currentTime,
     togglePlayback,
     undo,
@@ -67,8 +66,10 @@ export default function KeyboardShortcuts() {
         return;
       }
 
-      // Escape → Deselect
+      // Escape → Stop playback, return to zero, and deselect
       if (e.code === 'Escape') {
+        setIsPlaying(false);
+        setCurrentTime(0);
         useEditorStore.getState().setSelectedSound(null);
         return;
       }
@@ -76,7 +77,7 @@ export default function KeyboardShortcuts() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedSoundId, currentTime, togglePlayback, undo, redo, removeSound, splitSound]);
+  }, [selectedSoundId, currentTime, togglePlayback, undo, redo, removeSound, splitSound, setIsPlaying, setCurrentTime]);
 
   return null;
 }

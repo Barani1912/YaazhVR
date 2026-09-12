@@ -1,6 +1,6 @@
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
-import { Project, SoundLayer } from '@/types';
+import { toBlobURL } from '@ffmpeg/util';
+import { Project } from '@/types';
 import { clamp } from '@/utils/coordinates';
 
 // Helper to convert AudioBuffer to WAV format
@@ -45,8 +45,8 @@ function audioBufferToWav(buffer: AudioBuffer): Uint8Array {
     const channel2 = buffer.getChannelData(1);
     for (let i = 0; i < buffer.length; i++) {
       // Interleave channels
-      let sample1 = Math.max(-1, Math.min(1, channel1[i]));
-      let sample2 = Math.max(-1, Math.min(1, channel2[i]));
+      const sample1 = Math.max(-1, Math.min(1, channel1[i]));
+      const sample2 = Math.max(-1, Math.min(1, channel2[i]));
       view.setInt16(offset + pos, sample1 < 0 ? sample1 * 0x8000 : sample1 * 0x7FFF, true);
       pos += 2;
       view.setInt16(offset + pos, sample2 < 0 ? sample2 * 0x8000 : sample2 * 0x7FFF, true);
@@ -55,7 +55,7 @@ function audioBufferToWav(buffer: AudioBuffer): Uint8Array {
   } else {
     const channel = buffer.getChannelData(0);
     for (let i = 0; i < buffer.length; i++) {
-      let sample = Math.max(-1, Math.min(1, channel[i]));
+      const sample = Math.max(-1, Math.min(1, channel[i]));
       view.setInt16(offset + pos, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
       pos += 2;
     }
@@ -269,8 +269,8 @@ export class ExportEngine {
     
     // 5. Read output and create Blob URL
     const fileData = await ffmpeg.readFile('output.mp4');
-    const data = fileData as Uint8Array;
-    const blob = new Blob([data as any], { type: 'video/mp4' });
+    const bytes = typeof fileData === 'string' ? new TextEncoder().encode(fileData) : fileData;
+    const blob = new Blob([bytes as unknown as BlobPart], { type: 'video/mp4' });
     
     return URL.createObjectURL(blob);
   }

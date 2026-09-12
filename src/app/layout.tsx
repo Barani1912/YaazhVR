@@ -24,10 +24,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "EchoFrame — Spatial Audio Photo Editor",
+  title: "Yaazh VR — Spatial Audio Photo Editor",
   description:
     "Turn a single photo into an immersive spatial-audio memory. Drag sounds onto your image and export as MP4.",
-  keywords: ["spatial audio", "photo editor", "soundscape", "memory", "binaural"],
+  keywords: ["spatial audio", "photo editor", "soundscape", "memory", "binaural", "yaazhvr"],
 };
 
 export default function RootLayout({

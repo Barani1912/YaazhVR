@@ -82,6 +82,34 @@
   min-width: 0;
 }
 
+.soundNameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.soundNameBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  text-align: left;
+  max-width: 170px;
+}
+
+.soundNameBtn:hover .soundName {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.soundNameBtn:hover .editIcon {
+  opacity: 0.8;
+}
+
 .soundName {
   font-size: 13px;
   font-weight: 600;
@@ -89,6 +117,25 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.editIcon {
+  opacity: 0.35;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.soundNameInput {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-xs);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 6px;
+  outline: none;
+  width: 160px;
 }
 
 .soundCategoryBadge {

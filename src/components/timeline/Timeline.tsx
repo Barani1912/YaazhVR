@@ -58,7 +58,9 @@ export default function Timeline() {
   const handleTimelineDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
-      const data = e.dataTransfer.getData('application/echoframe-sound');
+      const data =
+        e.dataTransfer.getData('application/yaazhvr-sound') ||
+        e.dataTransfer.getData('application/echoframe-sound');
       if (!data || !scrollAreaRef.current) return;
 
       try {
@@ -417,7 +419,14 @@ export default function Timeline() {
             >
               −
             </button>
-            <span className={styles.zoomLabel}>{Math.round(timelineZoom)}%</span>
+            <button
+              className={styles.zoomLabel}
+              onClick={() => setTimelineZoom(100)}
+              title="Reset Timeline Zoom (100%)"
+              aria-label="Reset zoom to 100%"
+            >
+              {Math.round(timelineZoom)}%
+            </button>
             <button
               className={styles.zoomStepBtn}
               onClick={() => setTimelineZoom(Math.min(250, timelineZoom + 20))}

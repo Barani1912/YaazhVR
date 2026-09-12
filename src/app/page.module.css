@@ -16,6 +16,14 @@
   box-sizing: border-box;
 }
 
+.editorFullScale {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "toolbar"
+    "canvas";
+}
+
 /* ─── Modular Floating Panels ────────────────────────────────── */
 .toolbar {
   grid-area: toolbar;

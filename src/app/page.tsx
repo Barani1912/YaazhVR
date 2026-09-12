@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { useEditorStore } from '@/store/projectStore';
 import styles from './page.module.css';
 
 // Dynamic imports for canvas-dependent components (no SSR)
@@ -14,25 +15,33 @@ const KeyboardShortcuts = dynamic(() => import('@/components/KeyboardShortcuts')
 const PlaybackProvider = dynamic(() => import('@/components/PlaybackProvider'), { ssr: false });
 
 export default function EditorPage() {
+  const { isFullScale3D } = useEditorStore();
+
   return (
     <PlaybackProvider>
-      <div className={styles.editor}>
+      <div className={`${styles.editor} ${isFullScale3D ? styles.editorFullScale : ''}`}>
         <KeyboardShortcuts />
         <header className={styles.toolbar}>
           <TopToolbar />
         </header>
-        <aside className={styles.leftSidebar}>
-          <LeftSidebar />
-        </aside>
+        {!isFullScale3D && (
+          <aside className={styles.leftSidebar}>
+            <LeftSidebar />
+          </aside>
+        )}
         <main className={styles.canvas}>
           <ImageCanvas />
         </main>
-        <aside className={styles.rightSidebar}>
-          <PropertiesPanel />
-        </aside>
-        <footer className={styles.timeline}>
-          <Timeline />
-        </footer>
+        {!isFullScale3D && (
+          <aside className={styles.rightSidebar}>
+            <PropertiesPanel />
+          </aside>
+        )}
+        {!isFullScale3D && (
+          <footer className={styles.timeline}>
+            <Timeline />
+          </footer>
+        )}
         <ExportModal />
       </div>
     </PlaybackProvider>

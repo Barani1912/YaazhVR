@@ -299,6 +299,17 @@
   min-width: 36px;
   text-align: center;
   font-variant-numeric: tabular-nums;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--radius-xs);
+  transition: all var(--transition-fast);
+}
+
+.zoomLabel:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* ─── Timeline Body (Two-Column Modular Layout) ────────────── */

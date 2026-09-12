@@ -157,7 +157,7 @@ export default function ExportModal() {
             {downloadUrl && (
               <a
                 href={downloadUrl}
-                download={`${project.name || 'echoframe'}_spatial.mp4`}
+                download={`${(project.name || 'yaazh_vr').replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase()}_spatial.mp4`}
                 className={styles.primaryActionBtn}
                 style={{ textDecoration: 'none' }}
               >

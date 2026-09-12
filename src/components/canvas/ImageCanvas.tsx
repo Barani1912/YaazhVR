@@ -1,7 +1,8 @@
 'use client';
 
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { Stage, Layer, Image as KonvaImage, Group, Circle, Text, Ring, Rect } from 'react-konva';
+import { Stage, Layer, Group, Circle, Text, Ring, Rect } from 'react-konva';
+import SoundSphere3D from './SoundSphere3D';
 import { useEditorStore } from '@/store/projectStore';
 import { imageToSpatial } from '@/utils/coordinates';
 import { CATEGORIES, SoundAsset, SoundLayer } from '@/types';
@@ -17,6 +18,7 @@ export default function ImageCanvas() {
   const [image, setImageObj] = useState<HTMLImageElement | null>(null);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [isDragOverCanvas, setIsDragOverCanvas] = useState(false);
+  const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
   const {
     project,
@@ -34,51 +36,102 @@ export default function ImageCanvas() {
     const container = containerRef.current;
     if (!container) return;
 
+    const updateSize = () => {
+      const rect = container.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        setContainerSize({
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+        });
+      }
+    };
+    updateSize();
+
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
-      if (entry) {
+      if (entry && entry.contentRect.width > 0) {
         setContainerSize({
-          width: entry.contentRect.width,
-          height: entry.contentRect.height,
+          width: Math.round(entry.contentRect.width),
+          height: Math.round(entry.contentRect.height),
         });
       }
     });
     observer.observe(container);
     return () => observer.disconnect();
-  }, []);
+  }, [project.image]);
 
-  // ─── Load image ───────────────────────────────────────────────
+  // ─── Load image safely (Supports Blob URLs, Data URLs, and Remote URLs) ───
   useEffect(() => {
+    let active = true;
     if (!project.image) {
       setImageObj(null);
-      return;
+      setImageSize({ width: 0, height: 0 });
+      return () => {
+        active = false;
+      };
     }
+
     const img = new window.Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      setImageObj(img);
-      setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
+    // NEVER set crossOrigin on blob: or data: URLs (causes CORS rejection in Chromium)
+    if (project.image.startsWith('http://') || project.image.startsWith('https://')) {
+      img.crossOrigin = 'anonymous';
+    }
+
+    const onImageLoaded = (loadedImg: HTMLImageElement) => {
+      if (!active) return;
+      setImageObj(loadedImg);
+      const w = loadedImg.naturalWidth || loadedImg.width;
+      const h = loadedImg.naturalHeight || loadedImg.height;
+      if (w > 0 && h > 0) {
+        setImageSize({ width: w, height: h });
+      }
+    };
+
+    img.onload = () => onImageLoaded(img);
+    img.onerror = (e) => {
+      console.warn('Image load error with crossOrigin, retrying without crossOrigin:', e);
+      if (img.crossOrigin) {
+        const retry = new window.Image();
+        retry.onload = () => onImageLoaded(retry);
+        retry.src = project.image!;
+      }
     };
     img.src = project.image;
+
+    if (img.complete && (img.naturalWidth > 0 || img.width > 0)) {
+      onImageLoaded(img);
+    }
+
+    return () => {
+      active = false;
+    };
   }, [project.image]);
 
   // ─── Calculate image display rect (fit to container) ──────────
   const getImageDisplayRect = useCallback(() => {
-    if (!image || imageSize.width === 0 || imageSize.height === 0) {
-      return { x: 0, y: 0, width: 0, height: 0 };
+    const w = imageSize.width || (image ? image.naturalWidth : 0);
+    const h = imageSize.height || (image ? image.naturalHeight : 0);
+
+    if (w === 0 || h === 0) {
+      return {
+        x: Math.round(containerSize.width * 0.05),
+        y: Math.round(containerSize.height * 0.05),
+        width: Math.round(containerSize.width * 0.9),
+        height: Math.round(containerSize.height * 0.9),
+      };
     }
 
-    const padding = 32;
+    const padding = 36;
     const maxW = Math.max(100, containerSize.width - padding * 2);
     const maxH = Math.max(100, containerSize.height - padding * 2);
 
-    const scale = Math.min(maxW / imageSize.width, maxH / imageSize.height, 1);
-    const displayW = imageSize.width * scale * canvasZoom;
-    const displayH = imageSize.height * scale * canvasZoom;
+    const scale = Math.min(maxW / w, maxH / h);
+    const displayW = Math.round(w * scale * canvasZoom);
+    const displayH = Math.round(h * scale * canvasZoom);
 
     return {
-      x: (containerSize.width - displayW) / 2,
-      y: (containerSize.height - displayH) / 2,
+      x: Math.round((containerSize.width - displayW) / 2),
+      y: Math.round((containerSize.height - displayH) / 2),
       width: displayW,
       height: displayH,
     };
@@ -91,7 +144,9 @@ export default function ImageCanvas() {
     e.preventDefault();
     setIsDragOverCanvas(false);
 
-    const data = e.dataTransfer.getData('application/echoframe-sound');
+    const data =
+      e.dataTransfer.getData('application/yaazhvr-sound') ||
+      e.dataTransfer.getData('application/echoframe-sound');
     if (!data) return;
 
     const sound: SoundAsset = JSON.parse(data);
@@ -201,6 +256,11 @@ export default function ImageCanvas() {
     }
   }, [setSelectedSound]);
 
+  // ─── 3D Sound Sphere View ────────────────────────────────────
+  if (viewMode === '3d') {
+    return <SoundSphere3D onExit3D={() => setViewMode('2d')} />;
+  }
+
   // ─── Empty state ──────────────────────────────────────────────
   if (!project.image) {
     return (
@@ -227,6 +287,24 @@ export default function ImageCanvas() {
           <div className={styles.emptyHintPill}>
             <span>Binaural HRTF Engine Ready</span>
           </div>
+        </div>
+
+        {/* ─── Bottom-Right 3D Preview Button in Empty State ───────── */}
+        <div className={styles.bottomRightAction}>
+          <button
+            className={styles.preview3dHeroBtn}
+            onClick={() => setViewMode('3d')}
+            title="Preview in 3D Skeletal Soundfield Sphere"
+            aria-label="Preview in 3D"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" strokeDasharray="3 3" />
+              <circle cx="12" cy="12" r="6" />
+              <circle cx="12" cy="12" r="2" fill="currentColor" />
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </svg>
+            <span>Preview in 3D</span>
+          </button>
         </div>
       </div>
     );
@@ -276,28 +354,43 @@ export default function ImageCanvas() {
         </div>
       )}
 
-      {/* ─── Konva Canvas Stage ─────────────────────────────────── */}
+      {/* ─── Hardware-Accelerated Scene Background Image ────────── */}
+      {project.image && displayRect.width > 0 && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={project.image}
+          alt="Spatial Scene Background"
+          style={{
+            position: 'absolute',
+            left: `${displayRect.x}px`,
+            top: `${displayRect.y}px`,
+            width: `${displayRect.width}px`,
+            height: `${displayRect.height}px`,
+            borderRadius: '10px',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.14)',
+            objectFit: 'cover',
+            pointerEvents: 'none',
+            zIndex: 1,
+            userSelect: 'none',
+            display: 'block',
+          }}
+          onLoad={(e) => {
+            const target = e.currentTarget;
+            if (target.naturalWidth > 0 && (imageSize.width !== target.naturalWidth || imageSize.height !== target.naturalHeight)) {
+              setImageSize({ width: target.naturalWidth, height: target.naturalHeight });
+            }
+          }}
+        />
+      )}
+
+      {/* ─── Konva Canvas Stage for Interactive Sound Pins ───────── */}
       <Stage
         width={containerSize.width}
         height={containerSize.height}
         onClick={handleStageClick}
+        style={{ position: 'relative', zIndex: 2 }}
       >
         <Layer>
-          {/* Render background image */}
-          {image && displayRect.width > 0 && (
-            <KonvaImage
-              image={image}
-              x={displayRect.x}
-              y={displayRect.y}
-              width={displayRect.width}
-              height={displayRect.height}
-              cornerRadius={8}
-              shadowColor="#000000"
-              shadowBlur={30}
-              shadowOpacity={0.8}
-              listening={false}
-            />
-          )}
 
           {/* Sound Pins / Spatial Pucks */}
           {project.sounds.map((sound) => {
@@ -321,6 +414,24 @@ export default function ImageCanvas() {
           })}
         </Layer>
       </Stage>
+
+      {/* ─── Bottom-Right 3D Preview Button ───────────────────────── */}
+      <div className={styles.bottomRightAction}>
+        <button
+          className={styles.preview3dHeroBtn}
+          onClick={() => setViewMode('3d')}
+          title="Preview in 3D Skeletal Soundfield Sphere"
+          aria-label="Preview in 3D"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" strokeDasharray="3 3" />
+            <circle cx="12" cy="12" r="6" />
+            <circle cx="12" cy="12" r="2" fill="currentColor" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span>Preview in 3D</span>
+        </button>
+      </div>
     </div>
   );
 }

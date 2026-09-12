@@ -195,3 +195,43 @@
   color: var(--text-dim);
   text-transform: uppercase;
 }
+
+/* ─── Bottom-Right 3D Preview Button ───────────────────────── */
+.bottomRightAction {
+  position: absolute;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.preview3dHeroBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: var(--radius-full);
+  background: rgba(14, 165, 233, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.preview3dHeroBtn:hover {
+  background: #38bdf8;
+  color: #030712;
+  box-shadow: 0 6px 24px rgba(56, 189, 248, 0.45);
+  transform: translateY(-1px) scale(1.03);
+}
+
+.preview3dHeroBtn:active {
+  transform: scale(0.97);
+}

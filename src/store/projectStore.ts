@@ -7,10 +7,22 @@ function generateId(): string {
   return `sound_${Date.now()}_${++idCounter}`;
 }
 
+const getStoredProjectName = (): string => {
+  if (typeof window !== 'undefined') {
+    try {
+      const saved = localStorage.getItem('yaazhvr_project_name');
+      if (saved && saved.trim()) return saved.trim();
+    } catch {
+      // Ignore localStorage error
+    }
+  }
+  return 'Untitled Project';
+};
+
 // ─── Default Project ──────────────────────────────────────────────
 const defaultProject: Project = {
   id: 'project_1',
-  name: 'Untitled Project',
+  name: getStoredProjectName(),
   duration: 10,
   image: null,
   imageFile: null,
@@ -40,7 +52,7 @@ interface EditorStore extends EditorState {
   // Project actions
   setProjectName: (name: string) => void;
   setDuration: (duration: number) => void;
-  setImage: (file: File) => void;
+  setImage: (imageInput: File | string, fileName?: string) => void;
   clearImage: () => void;
 
   // Sound actions
@@ -71,6 +83,10 @@ interface EditorStore extends EditorState {
   setIsExporting: (exporting: boolean) => void;
   setExportProgress: (progress: number) => void;
 
+  // 3D View Scale
+  isFullScale3D: boolean;
+  setIsFullScale3D: (full: boolean) => void;
+
   // History
   undo: () => void;
   redo: () => void;
@@ -91,6 +107,8 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   timelineScrollX: 0,
   isExporting: false,
   exportProgress: 0,
+  isFullScale3D: false,
+  setIsFullScale3D: (isFullScale3D) => set({ isFullScale3D }),
 
   // History
   history: [{ project: { ...defaultProject } }],
@@ -156,6 +174,13 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   // ─── Project Actions ──────────────────────────────────────────
   setProjectName: (name) => {
     get().pushHistory();
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('yaazhvr_project_name', name);
+      } catch {
+        // Ignore localStorage error
+      }
+    }
     set((s) => ({ project: { ...s.project, name } }));
   },
 
@@ -164,12 +189,52 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     set((s) => ({ project: { ...s.project, duration: Math.max(1, duration) } }));
   },
 
-  setImage: (file) => {
-    const url = URL.createObjectURL(file);
+  setImage: (imageInput, fileName) => {
     get().pushHistory();
+    if (typeof imageInput === 'string') {
+      set((s) => ({
+        project: {
+          ...s.project,
+          image: imageInput,
+          imageFile: null,
+        },
+      }));
+      return;
+    }
+
+    // Handle File object
+    const file = imageInput;
+    let url = '';
+    try {
+      url = URL.createObjectURL(file);
+    } catch {
+      url = '';
+    }
+
+    // Set immediate blob URL
     set((s) => ({
       project: { ...s.project, image: url, imageFile: file },
     }));
+
+    // Also read as Data URL in background to ensure zero CORS and persistent storage
+    if (typeof window !== 'undefined' && window.FileReader) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
+        if (dataUrl) {
+          set((s) => {
+            // Only update if current image is still the active blob URL
+            if (s.project.image === url) {
+              return {
+                project: { ...s.project, image: dataUrl, imageFile: file },
+              };
+            }
+            return s;
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   },
 
   clearImage: () => {

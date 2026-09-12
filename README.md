@@ -48,9 +48,6 @@ yaazhvr/
 │       ├── objects/
 │       ├── people/
 │       └── temple/
-├── scripts/                     # Sound processing & build helpers
-│   ├── download_all_sounds.mjs
-│   └── generate-sounds.js
 ├── src/
 │   ├── app/                     # Next.js App Router (Layout & Pages)
 │   ├── audio/                   # Web Audio API 3D HRTF Spatial Engine
